@@ -3,15 +3,17 @@
 namespace App\Http\Controllers\Api\Blog\Admin;
 
 use App\Repositories\BlogPostRepository;
-use Illuminate\Http\Request;
+use App\Repositories\BlogCategoryRepository;
+use App\Http\Requests\BlogPostUpdateRequest;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class PostController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function __construct(private BlogPostRepository $blogPostRepository)
-    {
+    public function __construct(
+        private BlogPostRepository $blogPostRepository,
+        private BlogCategoryRepository $blogCategoryRepository
+    ) {
         parent::__construct();
     }
 
@@ -22,35 +24,34 @@ class PostController extends BaseController
         return $paginator;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function update(BlogPostUpdateRequest $request, string $id)
     {
-        //
-    }
+        $item = $this->blogPostRepository->getEdit($id);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        if (empty($item)) {
+            return ['message' => "Запис id=[{$id}] не знайдено"];
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        $data = $request->all();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        if (empty($data['slug'])) {
+            $data['slug'] = Str::slug($data['title']);
+        }
+
+        // Якщо поле published_at порожнє і нам прийшло 1 в ключі is_published, генеруємо поточну дату
+        if (empty($item->published_at) && $data['is_published']) {
+            $data['published_at'] = Carbon::now();
+        }
+
+        $result = $item->update($data);
+
+        if ($result) {
+            return [
+                'success' => true,
+                'message' => 'Успішно збережено'
+            ];
+        } else {
+            return ['message' => 'Помилка збереження'];
+        }
     }
 }
