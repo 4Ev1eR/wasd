@@ -38,9 +38,9 @@ const route = useRoute()
 const post = ref<BlogPostDetail | null>(null)
 
 const getPost = () => {
-    $fetch<BlogPostDetail>(`http://localhost/api/blog/posts/${route.params.id}`)
+    $fetch<{ data: BlogPostDetail }>(`http://localhost/api/blog/posts/${route.params.id}`)
         .then((response) => {
-            post.value = response
+            post.value = response.data
         })
         .catch((error) => {
             console.error('Помилка завантаження:', error)

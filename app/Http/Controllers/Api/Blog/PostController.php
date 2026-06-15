@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Blog;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BlogPost;
+use App\Http\Resources\Api\Blog\Admin\PostResource;
 
 class PostController extends BaseController
 {
@@ -16,7 +17,7 @@ class PostController extends BaseController
         $posts = BlogPost::with(['user', 'category'])
             ->paginate(10);
 
-        return $posts;
+        return PostResource::collection($posts);
     }
 
     /**
@@ -30,7 +31,8 @@ class PostController extends BaseController
     public function show(string $id)
     {
         $post = BlogPost::with(['user', 'category'])->findOrFail($id);
-        return $post;
+
+        return new PostResource($post);
     }
 
     public function update(Request $request, string $id)

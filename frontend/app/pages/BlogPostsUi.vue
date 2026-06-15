@@ -32,10 +32,12 @@ interface BlogPost {
 
 interface BlogPostsResponse {
     data: BlogPost[]
-    total: number
-    per_page: number
-    current_page: number
-    last_page: number
+    meta: {
+        total: number
+        per_page: number
+        current_page: number
+        last_page: number
+    }
 }
 
 const posts = ref<BlogPost[]>([])
@@ -54,14 +56,18 @@ const columns = [
 const getPosts = () => {
     $fetch<BlogPostsResponse>('http://localhost/api/blog/posts', {
         query: { page: page.value }
-    }).then((response) => {
-        console.log(response)
-        posts.value = response.data
-        total.value = response.total
-        perPage.value = response.per_page
-    }).catch((error) => {
-        console.error(error)
     })
+        .then((response) => {
+            console.log(response)
+            posts.value = response.data
+
+            // Додаємо .meta ось тут:
+            total.value = response.meta.total
+            perPage.value = response.meta.per_page
+        })
+        .catch((error) => {
+            console.error(error)
+        })
 }
 
 watch(page, () => {
