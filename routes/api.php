@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Blog\Admin\CategoryController;
 use App\Http\Controllers\Api\Blog\Admin\PostController as AdminPostController;
 use App\Http\Controllers\DiggingDeeperController;
 
+Route::get('/blog/posts', [PostController::class, 'index']);
 Route::group(['namespace' => 'App\Http\Controllers\Api\Blog', 'prefix' => 'blog'], function () {
     Route::apiResource('posts', PostController::class)->names('blog.posts');
 });

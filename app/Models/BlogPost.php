@@ -27,20 +27,13 @@ class BlogPost extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function category()
-    {
-        //стаття належить категорії
-        return $this->belongsTo(BlogCategory::class);
-    }
-
-    /**
-     * Автор статті
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function user()
     {
-        //стаття належить користувачу
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(\App\Models\User::class, 'user_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(\App\Models\BlogCategory::class, 'category_id');
     }
 }

@@ -65,11 +65,10 @@ class PostController extends BaseController
 
     public function destroy(string $id)
     {
-        $result = BlogPost::destroy($id);
+        $result = BlogPost::destroy($id); //софт деліт, запис лишається
 
         if ($result) {
-            // Відправляємо Job у чергу із затримкою у 20 секунд
-            BlogPostAfterDeleteJob::dispatch($id)->delay(20);
+            BlogPostAfterDeleteJob::dispatch($id)->delay(10);
 
             return ['success' => true, 'message' => "Запис id=[$id] успішно видалено"];
         } else {
