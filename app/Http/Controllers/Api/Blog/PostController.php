@@ -14,7 +14,7 @@ class PostController extends BaseController
     public function index()
     {
         $posts = BlogPost::with(['user', 'category'])
-            ->paginate(25);
+            ->paginate(10);
 
         return $posts;
     }
@@ -29,7 +29,9 @@ class PostController extends BaseController
 
     public function show(string $id)
     {
-        //
+        $post = BlogPost::with(['user', 'category'])->findOrFail($id);
+
+        return $post;
     }
 
     public function update(Request $request, string $id)
