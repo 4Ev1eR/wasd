@@ -30,7 +30,6 @@ class PostController extends BaseController
     public function show(string $id)
     {
         $post = BlogPost::with(['user', 'category'])->findOrFail($id);
-
         return $post;
     }
 

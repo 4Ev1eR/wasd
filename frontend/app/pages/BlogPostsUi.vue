@@ -2,7 +2,13 @@
     <div class="p-4">
         <h1 class="text-2xl font-bold mb-4">Список постів (Nuxt UI)</h1>
 
-        <UTable :data="posts" :columns="columns" class="mb-4" />
+        <UTable :data="posts" :columns="columns" class="mb-4">
+            <template #title-cell="{ row }">
+                <NuxtLink :to="`/BlogPost/${row.original.id}`" class="text-blue-500 hover:underline font-medium">
+                    {{ row.original.title }}
+                </NuxtLink>
+            </template>
+        </UTable>
 
         <div class="flex justify-center">
             <UPagination
@@ -39,16 +45,8 @@ const total = ref(0)
 
 const columns = [
     { accessorKey: 'id', header: '#' },
-    {
-        accessorKey: 'user.name',
-        header: 'Автор',
-        cell: ({ row }: { row: { original: BlogPost } }) => row.original.user?.name
-    },
-    {
-        accessorKey: 'category.title',
-        header: 'Категорія',
-        cell: ({ row }: { row: { original: BlogPost } }) => row.original.category?.title
-    },
+    { accessorKey: 'user.name', header: 'Автор' },
+    { accessorKey: 'category.title', header: 'Категорія' },
     { accessorKey: 'title', header: 'Заголовок' },
     { accessorKey: 'published_at', header: 'Дата публікації' }
 ]

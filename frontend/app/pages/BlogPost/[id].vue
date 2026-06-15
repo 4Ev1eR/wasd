@@ -1,15 +1,25 @@
 <template>
-    <div class="container p-4">
+    <div class="container mx-auto p-6 max-w-3xl">
         <div v-if="post">
-            <h1 class="text-2xl font-bold mb-2">{{ post.title }}</h1>
-            <p class="text-gray-500 mb-2">
-                Автор: {{ post.user.name }} | Категорія: {{ post.category.title }}
-            </p>
-            <p class="text-gray-400 mb-4">{{ post.published_at }}</p>
-            <div v-html="post.content_html"></div>
+            <h1 class="text-3xl font-bold mb-4">{{ post.title }}</h1>
+
+            <div class="flex items-center gap-4 text-gray-500 mb-6 pb-4 border-b">
+                <span>Автор: <b class="text-gray-700">{{ post.user.name }}</b></span>
+                <span>Категорія: <b class="text-gray-700">{{ post.category.title }}</b></span>
+                <span>Дата: {{ post.published_at }}</span>
+            </div>
+
+            <div class="prose max-w-none" v-html="post.content_html"></div>
+
+            <div class="mt-8 pt-4 border-t">
+                <NuxtLink to="/BlogPostsUi" class="text-primary-500 hover:underline">
+                    &larr; Повернутися до списку
+                </NuxtLink>
+            </div>
         </div>
-        <div v-else>
-            <p>Завантаження...</p>
+
+        <div v-else class="text-center py-10 text-gray-500">
+            <p>Завантаження поста...</p>
         </div>
     </div>
 </template>
@@ -30,11 +40,10 @@ const post = ref<BlogPostDetail | null>(null)
 const getPost = () => {
     $fetch<BlogPostDetail>(`http://localhost/api/blog/posts/${route.params.id}`)
         .then((response) => {
-            console.log(response)
             post.value = response
         })
         .catch((error) => {
-            console.error(error)
+            console.error('Помилка завантаження:', error)
         })
 }
 
