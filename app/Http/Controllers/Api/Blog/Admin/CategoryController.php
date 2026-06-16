@@ -17,18 +17,22 @@ class CategoryController extends BaseController
     {
         parent::__construct();
     }
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $categories = \App\Models\BlogCategory::paginate(15);
         return CategoryResource::collection($categories);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function show(string $id)
+    {
+        $item = $this->blogCategoryRepository->getEdit($id);
+        if (empty($item)) {
+            return ['message' => `Запис id=[{$id}] не знайдено`];
+        }
+        return new CategoryResource($item);
+    }
+
     public function store(BlogCategoryCreateRequest $request)
     {
         $data = $request->input();
@@ -45,14 +49,11 @@ class CategoryController extends BaseController
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(BlogCategoryUpdateRequest $request, string $id)
     {
         $item = $this->blogCategoryRepository->getEdit($id);
         if (empty($item)) {
-            return ['message' => "Запис id=[{$id}] не знайдено"];
+            return ['message' => `Запис id=[{$id}] не знайдено`];
         }
 
         $data = $request->all();
@@ -62,10 +63,23 @@ class CategoryController extends BaseController
         if ($result) {
             return [
                 'success' => true,
-            'message' => 'Успішно збережено'
-];
+                'message' => 'Успішно збережено'
+            ];
         } else {
             return ['message' => 'Помилка збереження'];
         }
+    }
+
+    public function destroy(string $id)
+    {
+        $item = $this->blogCategoryRepository->getEdit($id);
+
+        if (empty($item)) {
+            return ['message' => `Запис id=[{$id}] не знайдено`];
+        }
+
+        $item->delete();
+
+        return ['success' => true, 'message' => `Запис id=[$id] успішно видалено`];
     }
 }

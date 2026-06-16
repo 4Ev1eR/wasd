@@ -12,13 +12,14 @@ Route::get('/blog/posts', [PostController::class, 'index']);
 Route::group(['namespace' => 'App\Http\Controllers\Api\Blog', 'prefix' => 'blog'], function () {
     Route::apiResource('posts', PostController::class)->names('blog.posts');
 });
+
 $groupData = [
     'namespace' => 'App\Http\Controllers\Api\Blog\Admin',
     'prefix' => 'admin/blog',
 ];
 
 Route::group($groupData, function () {
-    $methods = ['index', 'store', 'update'];
+    $methods = ['index', 'show', 'store', 'update', 'destroy'];
     Route::apiResource('categories', CategoryController::class)
         ->only($methods)
         ->names('blog.admin.categories');
@@ -27,6 +28,7 @@ Route::group($groupData, function () {
         ->except(['show'])
         ->names('blog.admin.posts');
 });
+
 Route::group(['prefix' => 'digging_deeper'], function () {
     Route::get('process-video', [\App\Http\Controllers\DiggingDeeperController::class, 'processVideo'])
         ->name('digging_deeper.processVideo');
